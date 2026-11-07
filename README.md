@@ -1,3 +1,5 @@
+# mcp-starter-kit
+
 # 🏗️ Python Monorepo Starter Kit
 
 A production-grade Python monorepo starter kit featuring **Django REST API**, **Flask REST API**, and **Streamlit Frontend** templates — all managed with `uv` workspace for unified dependency management.
