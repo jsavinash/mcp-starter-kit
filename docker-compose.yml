@@ -1,92 +1,19 @@
-# ═══════════════════════════════════════════════════════════════
-# Python Starter Kit - Docker Compose
-# ═══════════════════════════════════════════════════════════════
-# This is a template for service orchestration.
-# The following apps are planned but not yet implemented:
-#   - apps/django-api  (Django REST API)
-#   - apps/flask-api   (Flask REST API)
-#   - apps/frontend    (Streamlit Frontend)
-#
-# To add a new app service:
-#   1. Create the app directory with a Dockerfile
-#   2. Add a service entry below (see commented examples)
-#   3. Run: docker compose up -d
-# ═══════════════════════════════════════════════════════════════
-
 services:
-  # ─── Django API (when implemented) ─────────────────────────
-  # django-api:
-  #   build:
-  #     context: ./apps/django-api
-  #     dockerfile: Dockerfile
-  #   container_name: django-api
-  #   command: gunicorn src.config.wsgi:application --bind 0.0.0.0:8000 --reload
-  #   volumes:
-  #     - ./apps/django-api:/app
-  #   ports:
-  #     - "8000:8000"
-  #   env_file:
-  #     - ./apps/django-api/.env
-  #   depends_on:
-  #     - redis
-  #   restart: unless-stopped
-  #   networks:
-  #     - monorepo-net
-
-  # ─── Flask API (when implemented) ──────────────────────────
-  # flask-api:
-  #   build:
-  #     context: ./apps/flask-api
-  #     dockerfile: Dockerfile
-  #   container_name: flask-api
-  #   command: gunicorn "src.app:create_app()" --bind 0.0.0.0:5000 --reload
-  #   volumes:
-  #     - ./apps/flask-api:/app
-  #   ports:
-  #     - "5000:5000"
-  #   env_file:
-  #     - ./apps/flask-api/.env
-  #   depends_on:
-  #     - redis
-  #   restart: unless-stopped
-  #   networks:
-  #     - monorepo-net
-
-  # ─── Streamlit Frontend (when implemented) ─────────────────
-  # frontend:
-  #   build:
-  #     context: ./apps/frontend
-  #     dockerfile: Dockerfile
-  #   container_name: frontend
-  #   command: streamlit run src/app.py --server.port=8501 --server.address=0.0.0.0
-  #   volumes:
-  #     - ./apps/frontend:/app
-  #   ports:
-  #     - "8501:8501"
-  #   env_file:
-  #     - ./apps/frontend/.env
-  #   depends_on:
-  #     - django-api
-  #     - flask-api
-  #   restart: unless-stopped
-  #   networks:
-  #     - monorepo-net
-
-  # ─── Shared Services ─────────────────────────────────────
-  redis:
-    image: redis:7-alpine
-    container_name: monorepo-redis
+  mcp-server:
+    build:
+      context: .
+      dockerfile: apps/example-server/Dockerfile
+    env_file: .env
+    environment:
+      MCP_TRANSPORT: streamable-http
+      MCP_HOST: 0.0.0.0
     ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
+      - "127.0.0.1:8000:8000"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
     restart: unless-stopped
-    networks:
-      - monorepo-net
-
-networks:
-  monorepo-net:
-    driver: bridge
-
-volumes:
-  redis_data:

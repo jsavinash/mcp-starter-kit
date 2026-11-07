@@ -1,35 +1,12 @@
-# ═══════════════════════════════════════════════════════════════
-# Python Monorepo - .dockerignore
-# Used for root-level Docker builds; each app has its own Dockerfile
-# ═══════════════════════════════════════════════════════════════
-
-# Ignore everything.
-**
-
-# Except the following common monorepo files.
-!pyproject.toml
-!uv.lock
-!README.md
-!LICENSE.txt
-!libs/
-!.env.example
-
-# Filter unwanted files from included folders.
+.git
+.venv
 **/__pycache__
-**/*.py[cod]
-**/*.pyo
-**/*.pyd
-**/.git
-**/.gitignore
-**/.DS_Store
-**/.venv
 **/.pytest_cache
-**/.ruff_cache
 **/.mypy_cache
-**/*.egg-info/
-**/.coverage
-**/htmlcov/
-**/node_modules/
-**/dist/
-**/build/
-**/.nox/
+**/.ruff_cache
+htmlcov
+site
+test-results
+.env
+.env.*
+!.env.example

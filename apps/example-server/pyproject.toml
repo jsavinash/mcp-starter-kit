@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcp-example-server"
+version = "0.1.0"
+description = "Example MCP service with tools, resources, prompts, stdio, and Streamable HTTP"
+requires-python = ">=3.11"
+dependencies = ["mcp-starter-core"]
+
+[project.scripts]
+mcp-example-server = "mcp_example_server.cli:main"
+
+[project.optional-dependencies]
+observability = ["opentelemetry-sdk>=1.29,<2", "opentelemetry-exporter-otlp>=1.29,<2"]
+
+[tool.uv.sources]
+mcp-starter-core = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_example_server"]

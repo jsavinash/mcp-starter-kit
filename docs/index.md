@@ -1,73 +1,26 @@
----
-icon: material/math-integral
-status: new
----
+# MCP Starter Kit documentation
 
-# Python Monorepo Starter Kit
+This site documents the current repository: a Python `uv` monorepo with an example MCP server, shared core library, CI, container template, and Codex project workflows.
 
-Welcome to the Python Monorepo Starter Kit documentation! This project provides a production-grade
-Python monorepo featuring Django REST API, Flask REST API, and Streamlit Frontend — all managed
-with `uv` workspace for unified dependency management.
+## Start here
 
-## Quick Start
+- [Getting started](getting-started.md) — install and run the server.
+- [Project structure](project-structure.md) — package boundaries and entry points.
+- [Architecture and MCP protocol](architecture.md) — protocol baseline and design decisions.
+- [Configuration reference](configuration.md) — all current `MCP_*` settings.
 
-### Prerequisites
+## Build and operate
 
-- Python 3.10+
-- [uv](https://docs.astral.sh/uv/) (package manager)
-- Docker & Docker Compose (optional)
+- [Example capabilities](capabilities.md)
+- [Transports and entry points](transports.md)
+- [Security and operations](operations/security.md)
+- [Deployment](operations/deployment.md)
+- [Development guide](development.md)
+- [Testing and CI](testing.md)
+- [Troubleshooting](troubleshooting.md)
+- [Python package reference](api-reference.md)
+- [Codex project setup](codex.md)
 
-### Installation
+## Project scope
 
-```bash
-# Install uv (if not installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Clone and install
-git clone <repo-url>
-cd python-starter-kit
-make install
-```
-
-### Running Services
-
-```bash
-# Terminal 1: Django API → http://localhost:8000
-make django-run
-
-# Terminal 2: Flask API → http://localhost:5000
-make flask-run
-
-# Terminal 3: Streamlit Frontend → http://localhost:8501
-make frontend-run
-
-# Or everything with Docker
-make docker-up
-```
-
-## Project Structure
-
-```
-python-starter-kit/
-├── apps/                    # Production applications
-│   ├── django-api/          # Django REST API
-│   ├── flask-api/           # Flask REST API
-│   └── frontend/            # Streamlit frontend
-├── libs/                    # Shared libraries
-│   └── shared/              # Common contracts and DTOs
-├── packages/                # Reusable Python packages
-├── tools/                   # CLI tools & utilities
-├── docs/                    # MkDocs documentation
-├── tests/                   # Root-level tests
-├── .github/workflows/       # CI/CD pipelines
-├── pyproject.toml           # Root workspace config
-└── docker-compose.yml       # Service orchestration
-```
-
-## Key Features
-
-- **Unified Dependency Management**: Centralized version catalog at `config/dependencies.toml`
-- **Multi-Layer Quality Gates**: Pre-commit, pre-push, and CI/CD enforcement
-- **Custom Git Hooks**: Branch protection, secret scanning, commit message validation
-- **Automated Testing**: Pytest with coverage, matrix testing across Python versions
-- **Docker Orchestration**: All services containerized with Docker Compose
+The example is a starter, not a fully tested production deployment. The visible automated test suite currently covers only the legacy root helper. Review [Testing and CI](testing.md) for the present coverage and recommended test plan, and complete the deployment/security review for your actual environment.

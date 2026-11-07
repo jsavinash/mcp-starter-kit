@@ -1,0 +1,16 @@
+# Project-scoped Codex defaults. These apply only when this repository is trusted.
+# Keep provider and account-specific model selection in the user's config.
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[models.new_thread]
+model_reasoning_effort = "high"
+
+# Local example server, intentionally disabled until a developer opts in.
+# Enable it only after installing the workspace with `uv sync --all-packages`.
+[mcp_servers.mcp_starter_example]
+enabled = false
+command = "uv"
+args = ["run", "--package", "mcp-example-server", "mcp-example-server"]
+default_tools_approval_mode = "prompt"

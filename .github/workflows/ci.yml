@@ -1,246 +1,72 @@
-name: CI/CD Pipeline
+name: CI
 
 on:
   push:
-    branches: [main, develop]
-    paths-ignore:
-      - 'docs/**'
-      - '**.md'
-      - '.gitignore'
-      - '.editorconfig'
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      run_docker_build:
-        description: 'Build Docker images'
-        type: boolean
-        default: false
 
 permissions:
   contents: read
-  checks: write
-  pull-requests: write
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  PYTHON_VERSION: "3.12"
-  UV_VERSION: "latest"
-
 jobs:
-  # ─── Lint & Format ───────────────────────────────────────
-  lint:
-    name: Lint & Format
+  quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v3
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v3
         with:
-          version: ${{ env.UV_VERSION }}
-
-      - name: Install dependencies
-        run: uv sync --group lint --group type_check
-
-      - name: Ruff lint check
+          version: latest
+      - name: Install workspace
+        run: uv sync --all-packages --locked
+      - name: Lint
         run: uv run ruff check .
-
-      - name: Ruff format check
+      - name: Format
         run: uv run ruff format --check .
+      - name: Type check
+        run: uv run mypy apps libs main.py
+      - name: Dependency audit
+        run: uv run pip-audit
+      - name: Build workspace packages
+        run: uv build --all-packages
 
-      - name: MyPy type check
-        run: uv run mypy . || true  # Don't fail CI on type errors
-
-  # ─── Tests ───────────────────────────────────────────────
   test:
-    name: Tests (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
-
+        python-version: ["3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v3
+      - uses: astral-sh/setup-uv@v3
         with:
-          version: ${{ env.UV_VERSION }}
+          version: latest
+      - name: Install workspace
+        run: uv sync --all-packages --locked
+      - name: Tests
+        run: uv run pytest -q
 
-      - name: Install dependencies
-        run: uv sync --group test
-
-      - name: Run Django API tests
-        run: |
-          cd apps/django-api
-          uv run pytest -v --junitxml=../../test-results/django-junit.xml || true
-
-      - name: Run Flask API tests
-        run: |
-          cd apps/flask-api
-          uv run pytest -v --junitxml=../../test-results/flask-junit.xml || true
-
-      - name: Run Frontend tests
-        run: |
-          cd apps/frontend
-          uv run pytest -v --junitxml=../../test-results/frontend-junit.xml || true
-
-      - name: Run root tests
-        run: uv run pytest -v --junitxml=test-results/root-junit.xml || true
-
-      - name: Run tests with coverage
-        run: uv run pytest --cov=apps --cov-report=term-missing --cov-report=xml || true
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-${{ matrix.python-version }}
-          path: |
-            test-results/
-            coverage.xml
-          retention-days: 7
-
-      - name: Upload coverage to artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report-${{ matrix.python-version }}
-          path: htmlcov/
-          retention-days: 7
-
-  # ─── Security Scan ───────────────────────────────────────
-  security:
-    name: Security Audit
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v3
-        with:
-          version: ${{ env.UV_VERSION }}
-
-      - name: Install dependencies
-        run: uv sync
-
-      - name: Check for known vulnerabilities
-        run: uv run pip-audit || true
-
-      - name: Check dependency licenses
-        run: uv run pip-licenses-cli --output licenses-report.txt || true
-
-  # ─── Quality Gate ────────────────────────────────────────
-  quality-gate:
-    name: Quality Gate
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: [lint, test, security]
-    if: always()
-    steps:
-      - name: Check lint status
-        run: |
-          echo "Lint job: ${{ needs.lint.result }}"
-          echo "Test job: ${{ needs.test.result }}"
-          echo "Security job: ${{ needs.security.result }}"
-          if [ "${{ needs.lint.result }}" = "failure" ] || [ "${{ needs.test.result }}" = "failure" ] || [ "${{ needs.security.result }}" = "failure" ]; then
-            echo "Quality gate FAILED"
-            exit 1
-          fi
-          echo "Quality gate PASSED"
-
-  # ─── Docker Build ────────────────────────────────────────
   docker:
-    name: Docker Build
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: |
-      always() &&
-      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'workflow_dispatch' && inputs.run_docker_build)
-    needs: [quality-gate]
+    needs: [quality, test]
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Django API image
-        uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v6
         with:
-          context: ./apps/django-api
+          context: .
+          file: apps/example-server/Dockerfile
           push: false
-          tags: monorepo/django-api:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build Flask API image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./apps/flask-api
-          push: false
-          tags: monorepo/flask-api:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build Frontend image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./apps/frontend
-          push: false
-          tags: monorepo/frontend:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  # ─── Package Build ───────────────────────────────────────
-  package:
-    name: Build Packages
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: [quality-gate]
-    if: always()
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v3
-        with:
-          version: ${{ env.UV_VERSION }}
-
-      - name: Build all packages
-        run: uv build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-packages
-          path: dist/
-          retention-days: 7

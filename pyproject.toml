@@ -1,128 +1,47 @@
 [project]
-name = "python-starter-kit"
+name = "mcp-starter-kit"
 version = "0.1.0"
-description = "A uv-based monorepo starter with Django API, Flask API, Streamlit frontend, and Python packages"
+description = "Production-oriented Python monorepo starter for Model Context Protocol servers"
 readme = "README.md"
-requires-python = ">=3.10"
-dependencies = [
-    "rich",
-    "typer-slim[standard]",
-    "python-dotenv>=1.2.1",
-    "click>=8.3.1",
-    "sqlalchemy>=2.0.46",
-    "shared",
-]
-
-[project.optional-dependencies]
-dev = [
-    "commitizen>=4.8.2",
-    "mypy>=1.16.0",
-    "pre-commit>=4.2.0",
-    "pytest>=8.3.5",
-    "pytest-cov>=5.0.0",
-    "ruff>=0.11.11",
-    "mkdocs>=1.6.1",
-    "mkdocs-material>=9.6.14",
-]
-
-[tool.poe]
-executor.type = "uv"
-
-[tool.poe.tasks]
-
-[build-system]
-requires = ["hatchling>=1.26"]
-build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-packages = [
-    "libs/shared",
-]
+requires-python = ">=3.11"
+dependencies = ["mcp-example-server"]
 
 [dependency-groups]
-# Centralized dependency catalog at config/dependencies.toml
-# Use: uv sync --group <name>
-
-nox = ["nox-uv"]
-test = [
-    "pytest>=8.0",
-    "pytest-cov>=5.0",
-    "pytest-randomly>=3.15",
-    "pytest-timeout>=2.3.0",
-    "pytest-asyncio>=0.24.0",
-]
-type_check = [
-    "mypy>=1.16.0",
-]
-lint = [
-    "ruff>=0.11.0",
+dev = [
+    "mcp[cli]>=2.0,<3",
+    "mypy>=1.16,<2",
+    "pip-audit>=2.7,<3",
+    "pytest>=8.3,<9",
+    "pytest-asyncio>=0.24,<2",
+    "pytest-cov>=5,<8",
+    "ruff>=0.11,<1",
 ]
 docs = [
-    "mkdocs-material>=9.6.14",
-    "mkdocs-htmlproofer-plugin>=1.2.0",
-    "mkdocstrings[python]>=0.25.0",
-    "mkdocs-api-autonav>=0.1.0",
+    "mkdocs-material>=9.6,<10",
+    "mkdocstrings[python]>=0.25,<2",
 ]
-licenses = ["pip-licenses-cli>=1.0.0"]
-debugging_tool = ["pysnooper>=0.8.0"]
-dev = [
-    "poethepoet>=0.40.0",
-    "pre-commit>=4.6.0",
-    "commitizen>=4.8.2",
-]
-security = ["pip-audit>=2.7.0"]
 
-[tool.setuptools.packages.find]
-where = ["libs"]
-
-[tool.uv.sources]
-shared = { workspace = true, editable = true }
+[tool.uv]
+package = false
+default-groups = ["dev"]
 
 [tool.uv.workspace]
-members = [
-    "libs/shared",
-]
+members = ["apps/*", "libs/*"]
 
-[tool.mypy]
-ignore_missing_imports = true
-strict = true
-enable_error_code = ["deprecated", "exhaustive-match", "explicit-override"]
-exclude = ["noxfile\\.py$"]
+[tool.uv.sources]
+mcp-example-server = { workspace = true }
+mcp-starter-core = { workspace = true }
 
 [tool.ruff]
-line-length = 88
-target-version = "py310"
-indent-width = 4
-src = ["libs", "tests"]
-exclude = [
-    ".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg",
-    ".ipynb_checkpoints", ".mypy_cache", ".nox", ".pants.d", ".pyenv",
-    ".pytest_cache", ".pytype", ".ruff_cache", ".svn", ".tox", ".venv",
-    ".vscode", "__pypackages__", "_build", "buck-out", "build", "dist",
-    "node_modules", "site-packages", "venv",
-]
+line-length = 100
+target-version = "py311"
+src = ["apps/example-server/src", "libs/mcp-starter-core/src"]
 
 [tool.ruff.lint]
-select = [
-    "F", "E", "I", "N", "UP", "RUF", "B", "C4", "ISC", "PIE",
-    "PT", "PTH", "SIM", "TID",
-]
-ignore = ["B008", "RUF005", "RUF012"]
-fixable = ["ALL"]
-unfixable = ["F401"]
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["B008"]
 
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-skip-magic-trailing-comma = false
-line-ending = "auto"
-docstring-code-format = false
-docstring-code-line-length = "dynamic"
-
-[tool.ruff.lint.isort]
-force-sort-within-sections = true
-split-on-trailing-comma = false
-
-[tool.ruff.lint.flake8-tidy-imports]
-ban-relative-imports = "all"
+[tool.mypy]
+python_version = "3.11"
+strict = true
+mypy_path = ["apps/example-server/src", "libs/mcp-starter-core/src"]

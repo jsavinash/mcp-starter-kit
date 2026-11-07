@@ -1,177 +1,57 @@
-# ═══════════════════════════════════════════════════════════════
-# Python Monorepo - .gitignore
-# ═══════════════════════════════════════════════════════════════
-
-# ─── Python Bytecode & Cache ──────────────────────────────
+# Python bytecode and package metadata
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
-*$py.class
-
-# ─── Build Artifacts ──────────────────────────────────────
-dist/
-build/
-*.egg-info/
 *.egg
-*.whl
-*.manifest
-*.spec
-*.so
+*.egg-info/
 
-# ─── Virtual Environments ─────────────────────────────────
+# Python environments and test/type-check caches
 .venv/
 venv/
 env/
-ENV/
-.venv.bak/
-virtualenv/
-
-# ─── IDE & Editor ─────────────────────────────────────────
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-*.sublime-workspace
-*.sublime-project
-*.iml
-*.vscode
-.history/
-
-# ─── OS Files ─────────────────────────────────────────────
-.DS_Store
-Thumbs.db
-Desktop.ini
-ehthumbs.db
-Icon?
-*.lnk
-
-# ─── Environment Files ────────────────────────────────────
-.env
-.env.local
-.env.production
-.env.development
-.env.staging
-.env.test
-.env.*.local
-.envrc
-.flaskenv
-
-# ─── Testing & Coverage ───────────────────────────────────
-.coverage
-.coverage.*
-.coverage*
-*.cover
-coverage.xml
-coverage/
-htmlcov/
+.tox/
+.nox/
 .pytest_cache/
-test-results/
-junit.xml
-*.junit
-.cache/
-hypothesis/
-
-# ─── Linting & Type Checking ──────────────────────────────
-.ruff_cache/
+.hypothesis/
 .mypy_cache/
 .dmypy.json
-dmypy.json
-.pytype/
-.pyre/
-.pyre_configuration
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
 
-# ─── Django ───────────────────────────────────────────────
-*.sqlite3
-*.sqlite3-wal
-*.sqlite3-shm
-db.sqlite3
-staticfiles/
-media/
-logs/
-instance/
-.webassets-cache
-
-# ─── Flask ─────────────────────────────────────────────────
-instance/
-.webassets-cache
-uploads/
-flask_session/
-
-# ─── Streamlit ─────────────────────────────────────────────
-.streamlit/secrets.toml
-
-# ─── Docker ────────────────────────────────────────────────
-.docker/
-docker-compose.override.yml
-
-# ─── Documentation ─────────────────────────────────────────
+# Build, package, docs, and test output
+build/
+dist/
 site/
-# mkdocs.yml is tracked in version control
+test-results/
 
-# ─── Jupyter Notebooks ────────────────────────────────────
-.ipynb_checkpoints/
-*.ipynb
-
-# ─── Logs ─────────────────────────────────────────────────
-*.log
-logs/
-
-# ─── Database Backups ─────────────────────────────────────
-*.backup
-*.dump
-*.sql.gz
-*.sql.bz2
-
-# ─── Secret Files ─────────────────────────────────────────
+# Local secrets and environment configuration
+.env
+.env.*
+!.env.example
+!.env.*.example
+.envrc
 *.key
 *.pem
-*.cert
-*.secret
 *.p12
 *.pfx
 
-# ═══════════════════════════════════════════════════════════════
-# Project-Specific Ignores
-# ═══════════════════════════════════════════════════════════════
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+.cache/
+.codex/cache/
+.codex/tmp/
 
-# ─── Duplicate/Redundant Root Files ───────────────────────
-# Root-level CLI directory (duplicate of tools/cli/)
-/cli/
-
-# Root-level pre-commit config (duplicate of .pre-commit-config.yaml)
-/pre-commit-config.yaml
-
-# Root-level core package init (should be in packages/core/)
-/packages/core/__init__.py
-
-# ─── Old/Deprecated Project Structures ────────────────────
-# Old monolithic app
-/apps/monolithic/
-
-# Old React web app (has its own node_modules)
-/apps/web/node_modules/
-/apps/web/dist/
-/apps/web/build/
-/apps/web/package-lock.json
-/apps/web/tsconfig.*.tsbuildinfo
-/apps/web/tsconfig.tsbuildinfo
-/apps/web/vite.config.d.ts
-/apps/web/vite.config.js
-
-# ─── Generated License Reports ────────────────────────────
-/docs/licenses/
-
-# ─── Nox (Test Runner) Artifacts ──────────────────────────
-/noxfile.py
-.nox/
-
-# ─── CSV & Data Files (sample data) ───────────────────────
-*.csv
-*.tsv
-
-# ─── OS generated files ───────────────────────────────────
-ehthumbs.db
+# Local editors and operating system files
+.DS_Store
+._*
 Thumbs.db
-*.stackdump
+Desktop.ini
+.idea/
+.vscode/
+.fleet/
+*.swp
+*.swo

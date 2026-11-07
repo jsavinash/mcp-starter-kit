@@ -1,104 +1,46 @@
-# MkDocs configuration for Python Monorepo Starter Kit
-site_name: Python Monorepo Starter Kit
-site_description: "A production-grade Python monorepo featuring Django REST API, Flask REST API, and Streamlit Frontend"
-site_author: Avinash Nishad
-site_url: https://jsavinash.github.io/python-starter-kit
-repo_name: python-starter-kit
-repo_url: https://github.com/jsavinash/python-starter-kit
-edit_uri: edit/main/docs/
+site_name: MCP Starter Kit
+site_description: Python monorepo starter for Model Context Protocol servers
+repo_name: jsavinash/mcp-starter-kit
+repo_url: https://github.com/jsavinash/mcp-starter-kit
 
-# ─── Theme ──────────────────────────────────────────────────────
 theme:
   name: material
-  language: en
-  palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - scheme: slate
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
   features:
     - navigation.instant
-    - navigation.instant.prefetch
-    - navigation.tracking
-    - navigation.tabs
-    - navigation.tabs.sticky
     - navigation.sections
-    - navigation.expand
-    - navigation.path
-    - navigation.indexes
-    - toc.follow
-    - toc.integrate
-    - search.suggest
+    - navigation.tracking
     - search.highlight
-    - search.share
-    - content.tabs.link
     - content.code.copy
-    - content.code.annotate
-  icon:
-    logo: material/math-integral-box
 
-# ─── Plugins ────────────────────────────────────────────────────
 plugins:
   - search
-  - mkdocstrings:
-      handlers:
-        python:
-          import:
-            - https://docs.python.org/3/objects.inv
-          options:
-            show_source: true
-            show_root_heading: true
-            show_category_heading: true
-            docstring_style: google
-  - git-revision-date-localized:
-      enable_creation_date: true
-  - minify:
-      minify_html: true
 
-# ─── Extras ─────────────────────────────────────────────────────
-extra:
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/jsavinash
-    - icon: fontawesome/brands/python
-      link: https://pypi.org/
-  generator: false
-
-# ─── Extensions ─────────────────────────────────────────────────
 markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
-  - pymdownx.highlight:
-      anchor_linenums: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.keys
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - pymdownx.tasklist:
-      custom_checkbox: true
   - tables
   - toc:
       permalink: true
 
-# ─── Navigation ─────────────────────────────────────────────────
 nav:
   - Home: index.md
-  - Architecture:
-    - Overview: ARCHITECTURE.md
-  - Contributing: CONTRIBUTING.md
-
-# ─── Copyright ──────────────────────────────────────────────────
-copyright: Copyright &copy; 2024 Avinash Nishad
+  - Getting started: getting-started.md
+  - Project structure: project-structure.md
+  - Architecture & MCP:
+      - Architecture: architecture.md
+      - Capabilities: capabilities.md
+      - Transports: transports.md
+  - Configuration: configuration.md
+  - Development:
+      - Development guide: development.md
+      - Testing & CI: testing.md
+      - Troubleshooting: troubleshooting.md
+  - Operations:
+      - Security: operations/security.md
+      - Deployment: operations/deployment.md
+  - Reference:
+      - Python packages: api-reference.md
+      - Codex project setup: codex.md

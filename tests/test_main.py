@@ -10,4 +10,4 @@ SPEC.loader.exec_module(module)
 
 
 def test_build_welcome_message() -> None:
-    assert module.build_welcome_message() == "Hello from python-starter-kit!"
+    assert module.build_welcome_message() == "Hello from mcp-starter-kit!"

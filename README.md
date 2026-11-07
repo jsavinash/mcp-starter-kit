@@ -1,241 +1,87 @@
-# mcp-starter-kit
+# MCP Starter Kit
 
-# 🏗️ Python Monorepo Starter Kit
+A Python monorepo starter for building and deploying modular Model Context Protocol servers with the official Python SDK, `uv`, and a reusable core package.
 
-A production-grade Python monorepo starter kit featuring **Django REST API**, **Flask REST API**, and **Streamlit Frontend** templates — all managed with `uv` workspace for unified dependency management.
+> **SDK API note:** This repository targets the official Python SDK v2 API line and MCP `2026-07-28`. Its high-level server is `MCPServer`; `FastMCP` is the SDK v1 API. See [Architecture and protocol](docs/architecture.md#sdk-and-specification-versioning) for the version choice.
 
-## 📋 Current State
+## Quick start
 
-```
-python-starter-kit/
-│
-├── apps/                          # Application projects (planned)
-│   ├── django-api/                # Django REST API - Not yet created
-│   ├── flask-api/                 # Flask REST API - Not yet created
-│   ├── frontend/                  # Streamlit Frontend - Not yet created
-│   └── web/                       # React web frontend (boilerplate)
-│
-├── libs/                          # Shared libraries
-│   └── shared/                    # Common DTOs, contracts, utilities (Pydantic)
-│
-├── educational-resources/         # Learning materials
-│   └── python-programming/        # Python programming resources
-│
-├── config/                        # Configuration
-│   └── dependencies.toml          # Centralized dependency version catalog
-│
-├── docs/                          # MkDocs documentation site
-│
-├── tests/                         # Root-level tests
-│
-├── .github/workflows/             # CI/CD pipelines (GitHub Actions)
-├── .githooks/                     # Custom git hooks (pre-commit, commit-msg, pre-push)
-│
-├── pyproject.toml                 # Root workspace config
-├── docker-compose.yml             # Service orchestration (Redis, app templates)
-├── Makefile                       # Development automation
-├── main.py                        # Root entry point
-└── .pre-commit-config.yaml        # Pre-commit framework hooks
-```
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Python 3.10+
-- [uv](https://docs.astral.sh/uv/) (package manager)
-- Docker & Docker Compose (optional)
-
-### Install Dependencies
-```bash
-# Install uv (if not installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Clone and install
-git clone <repo-url>
-cd python-starter-kit
-make install
-```
-
-### Install Git Hooks
-```bash
-# Custom bash hooks (recommended - branch protection, secret scanning, quality checks)
-bash scripts/install-hooks.sh
-
-# Pre-commit framework hooks
-uv run pre-commit install
-```
-
-### Run Root CLI
-```bash
-uv run python main.py
-# → Hello from python-starter-kit!
-```
-
-## 📖 Features
-
-### Current Implementation
-
-| Feature | Status | Details |
-|---------|--------|---------|
-| **uv Workspace** | ✅ Complete | Unified dependency management with single lockfile |
-| **Shared Library** | ✅ Complete | `libs/shared` with Pydantic DTOs, contracts, utilities |
-| **Custom Git Hooks** | ✅ Complete | 9 pre-commit checks, commit message validation, 6 pre-push checks |
-| **Secret Scanning** | ✅ Complete | High-confidence pattern detection for credentials & API keys |
-| **Centralized Dep Catalog** | ✅ Complete | `config/dependencies.toml` - single source of truth for versions |
-| **CI/CD Pipeline** | ✅ Complete | GitHub Actions with lint, test matrix, security, docker, package jobs |
-| **Docker Orchestration** | ✅ Complete | Docker Compose with Redis, templated app services |
-| **MkDocs Documentation** | ✅ Complete | Material theme, API docs via mkdocstrings |
-| **Code Quality** | ✅ Complete | Ruff lint, Ruff format, MyPy strict mode, Pytest with coverage |
-| **React Web App** | ✅ Boilerplate | `apps/web` - Vite + React + TypeScript + Vitest |
-
-### Planned Applications
-
-| App | Framework | Port | Description |
-|-----|-----------|------|-------------|
-| `apps/django-api` | Django 5.0 + DRF | 8000 | JWT auth, user management, Swagger docs, Celery tasks |
-| `apps/flask-api` | Flask 3.0 + SQLAlchemy | 5000 | Blueprint pattern, Marshmallow validation, Celery tasks |
-| `apps/frontend` | Streamlit 1.35+ | 8501 | Dashboard UI, auth forms, Plotly charts, httpx client |
-
-### App Scaffolding (when apps are created)
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-# Each app will have its own:
-├── src/                    # Application source code
-├── tests/                  # Pytest test suite
-├── Dockerfile              # Multi-stage Docker build
-├── pyproject.toml          # App-specific dependencies
-└── .env                    # Environment configuration
-```
-
-## 📦 Dependency Management
-
-### Centralized Version Catalog
-
-All dependency versions are managed centrally in `config/dependencies.toml` — the single source of truth for the entire monorepo. This file catalogs every dependency organized by ecosystem (Django, Flask, FastAPI, testing, linting, etc.).
-
-### How to Manage Dependencies
-
-```bash
-# View the dependency catalog
-make dep-catalog
-
-# List all workspace dependencies
-make dep-list
-
-# Check for outdated dependencies
-make dep-outdated
-
-# Add a dependency
-uv add <package>
-
-# Upgrade all dependencies
-make dep-upgrade-all
-
-# Verify no dependency conflicts
-make dep-verify
-
-# Audit for vulnerabilities
-make dep-audit
-
-# Check dependency licenses
-make dep-licenses
-```
-
-## 🛠️ Development Workflow
-
-### Code Quality
-```bash
-make lint          # Ruff lint check
-make format        # Ruff auto-format
-make format-check  # Check formatting without changes
-make typecheck     # MyPy type checking
-make test          # Run all tests
-make test-cov      # Tests with coverage report
-make quality-check # All quality checks combined
-make quality-fix   # Auto-fix all quality issues
-make test-all      # Full suite: test + quality
-```
-
-### Clean Build
-```bash
-make clean        # Clean Python cache artifacts
-make deep-clean   # Remove all build/cache artifacts (venv, node_modules, etc.)
-make full-build   # Full pipeline: install + test + quality
-```
-
-### Docker Commands
-```bash
-make docker-build          # Build all images
-make docker-up             # Start services
-make docker-down           # Stop all services
-make docker-logs           # View all logs
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Copy the example env file and customize:
-
-```bash
+uv sync --all-packages
 cp .env.example .env
+uv run --package mcp-example-server mcp-example-server
 ```
 
-See `.env.example` for all available configuration options including:
-- Django, Flask, and Streamlit settings
-- Database connection strings
-- Redis configuration
-- JWT secrets
-- Sentry DSN
-- AWS credentials
-
-### Python Version
+That starts stdio mode, which is the right transport for a local MCP host that launches the process. To run Streamable HTTP locally:
 
 ```bash
-cat .python-version
-# → 3.12
+MCP_TRANSPORT=streamable-http uv run --package mcp-example-server mcp-example-server
 ```
 
-## 🔐 Security
+The endpoint is `http://127.0.0.1:8000/mcp`. Use the Inspector during development:
 
-### Multi-Layer Protection
+```bash
+uv run mcp dev apps/example-server/src/mcp_example_server/dev.py
+```
 
-1. **Pre-commit Hook**: Secret scanning, credential detection, private key checks
-2. **Pre-push Hook**: Dependency vulnerability audit via `pip-audit`
-3. **CI/CD Pipeline**: Automated security scanning on every push/PR
+To host the ASGI app with uvicorn:
 
-### Supported Secret Patterns
-- AWS Access Keys (`AKIA...`)
-- Private Keys (`-----BEGIN PRIVATE KEY-----`)
-- GitHub Tokens (`ghp_...`, `gho_...`, `github_pat_...`)
-- OpenAI API Keys (`sk-...`)
-- Slack Tokens (`xox[baprs]-...`)
-- Stripe Keys (`pk_live_...`, `sk_live_...`)
+```bash
+MCP_TRANSPORT=streamable-http uv run --package mcp-example-server uvicorn mcp_example_server.http_app:app
+```
 
-## 📊 Quality Gates
+Remote HTTP binds require OAuth introspection configuration and an explicit host allowlist. A boolean setting alone never enables authentication. See [deployment and security](docs/operations/security.md).
 
-| Layer | Check | Timing |
-|-------|-------|--------|
-| **Pre-Commit** | Branch protection, file validation, commit message format, secret scanning, Ruff format, Ruff lint, MyPy, quick tests | On `git commit` |
-| **Pre-Push** | Branch protection, full test suite, full quality check, commit history, dependency audit | On `git push` |
-| **CI/CD** | Lint, test matrix (3.10/3.11/3.12), security audit, Docker build, package build | GitHub Actions |
+## Workspace map
 
-## 🤝 Contributing
+```text
+apps/
+└── example-server/                  # Deployable service, CLI, ASGI app, capabilities
+    └── src/mcp_example_server/
+        ├── server.py                # Composition root
+        ├── cli.py                   # stdio and HTTP runner
+        ├── http_app.py              # uvicorn/ASGI entry point
+        └── features/                # tools, resources, prompts
+libs/
+└── mcp-starter-core/                # Reusable config, auth, lifecycle, logging
+    └── src/mcp_starter_core/
+docs/
+├── architecture.md
+└── operations/security.md
+```
 
-1. Install hooks: `bash scripts/install-hooks.sh`
-2. Create a feature branch: `git checkout -b feat/my-feature`
-3. Make changes and run quality checks: `make test-all`
-4. Commit using conventional commits: `git commit -m "feat(scope): description"`
-5. Push and create a Pull Request
+Each deployable MCP server belongs under `apps/`. Cross-service configuration, OAuth resource-server integration, lifecycle, and transport security belong in `libs/mcp-starter-core`. Keep business logic in feature/service modules; keep MCP registration and transport setup at the app edge.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+## Included capabilities
 
-## 📚 Documentation
+- **Tools:** typed schema-driven calculator example with an expected `ToolError` for recoverable failures.
+- **Resources:** static guide resource and URI-template resource with typed not-found errors.
+- **Prompts:** user-invoked topic explanation prompt.
+- **Transports:** stdio and Streamable HTTP; SSE is legacy and not selected for new services.
+- **OAuth resource server:** optional RFC 7662 introspection verifier using the SDK's `TokenVerifier` and `AuthSettings` hooks. It checks active status, expiration, scope shape, and resource/audience, and never logs bearer tokens.
+- **Runtime:** typed environment config, lifespan-managed HTTP client, JSON/console structured logs to stderr, request body limit, DNS rebinding/host/origin protection, Docker image, and CI workflows.
+- **Protocol:** the SDK owns JSON-RPC dispatch, compatibility, per-request metadata, routing headers, and OpenTelemetry spans. Stable demo listings/read resources declare short-lived public cache hints.
 
-- [Architecture Overview](ARCHITECTURE.md)
-- [Contributing Guide](CONTRIBUTING.md)
-- [Monorepo Improvements](MONOREPO_IMPROVEMENTS.md)
+MCP Tasks, Apps, and other extensions are opt-in. This starter does not advertise extensions it has not implemented.
 
-## 📄 License
+## Common commands
 
-MIT License - see LICENSE file for details.
+```bash
+make install          # sync all workspace projects and root dev tools
+make run-stdio        # launch the example over stdio
+make run-http         # launch local Streamable HTTP
+make lint             # Ruff lint
+make format           # Ruff format
+make typecheck        # MyPy
+make test             # Pytest
+make security         # pip-audit
+make docs             # build the MkDocs site
+make docker-build     # build the example server image
+```
+
+`docker compose up` is a protected remote-bind template. It fails closed until `.env` contains
+complete OAuth introspection settings and a host allowlist for the deployment.
+
+Configuration is documented in [.env.example](.env.example) and the [configuration reference](docs/configuration.md). Start at the [documentation site](docs/index.md) for the complete guides. The protocol and implementation decisions are in [Architecture](ARCHITECTURE.md). Operational guidance is in [Security](docs/operations/security.md) and [Deployment](docs/operations/deployment.md).

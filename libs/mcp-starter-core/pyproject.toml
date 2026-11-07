@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcp-starter-core"
+version = "0.1.0"
+description = "Shared configuration, OAuth resource-server auth, and lifecycle primitives for MCP services"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27,<1",
+    "mcp>=2.0,<3",
+    "pydantic-settings>=2.6,<3",
+    "structlog>=24.4,<26",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_starter_core"]

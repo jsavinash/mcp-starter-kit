@@ -1,7 +1,7 @@
 """Root-level test configuration for the monorepo."""
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 
 def _find_repo_root(start: Path) -> Path:
@@ -16,7 +16,8 @@ ROOT = _find_repo_root(Path(__file__).resolve())
 # Add key package paths so root-level tests can import workspace packages
 for path in [
     ROOT,
-    ROOT / "libs/shared/src",
+    ROOT / "libs/mcp-starter-core/src",
+    ROOT / "apps/example-server/src",
 ]:
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
